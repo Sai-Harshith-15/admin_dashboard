@@ -76,7 +76,7 @@ class DashboardDesktopScreen extends StatelessWidget {
                               groupsSpace: 20.0,
                               barTouchData: BarTouchData(
                                 touchTooltipData: BarTouchTooltipData(
-                                  getTooltipColor: (_) => Colors.red,
+                                  getTooltipColor: (_) => Colors.white,
                                 ),
                                 touchCallback: (p0, p1) {},
                               )),
