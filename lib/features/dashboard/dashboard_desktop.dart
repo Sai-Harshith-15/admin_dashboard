@@ -3,6 +3,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../widgets/order_status_grap.dart';
+import '../widgets/weekly_sales.dart';
+
 class DashboardDesktopScreen extends StatelessWidget {
   const DashboardDesktopScreen({super.key});
 
@@ -10,7 +13,7 @@ class DashboardDesktopScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(DashboardController());
     return Scaffold(
-      appBar: AppBar(title: Text("Wrap Example")),
+      appBar: AppBar(title: Text("Dashboard")),
       body: SingleChildScrollView(
         child: Center(
           child: Wrap(
@@ -20,85 +23,50 @@ class DashboardDesktopScreen extends StatelessWidget {
             spacing: 16, // Space between cards horizontally
             runSpacing: 16, // Space between rows of cards vertically
             children: [
-              _buildCard("Card 1"),
+              /*  _buildCard("Card 1"),
               _buildCard("Card 2"),
               _buildCard("Card 3"),
-              _buildCard("Card 4"),
-              //bar
-              SizedBox(
-                height: MediaQuery.of(context).size.height * .4,
-                width: MediaQuery.of(context).size.width * .4,
+              _buildCard("Card 4"), */
+              // Weekly Sales Card with Graph
+              /*  SizedBox(
+                height: MediaQuery.of(context).size.height * 0.4,
+                width: MediaQuery.of(context).size.width * 0.4,
                 child: Card(
                   elevation: 5,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Weekly Sales"),
-                      const SizedBox(
-                        height: 20,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Weekly Sales"),
                       ),
-                      //graph
-
+                      const SizedBox(height: 20),
                       Expanded(
-                        child: BarChart(
-                          BarChartData(
-                              titlesData: buildFlTitleData(),
-                              borderData: FlBorderData(
-                                show: true,
-                                border: Border(
-                                  top: BorderSide.none,
-                                  right: BorderSide.none,
-                                ),
-                              ),
-                              gridData: FlGridData(
-                                show: true,
-                                drawHorizontalLine: true,
-                                drawVerticalLine: false,
-                                horizontalInterval: 200,
-                              ),
-                              barGroups: controller.weeklySales
-                                  .asMap()
-                                  .entries
-                                  .map(
-                                    (entry) => BarChartGroupData(
-                                        x: entry.key,
-                                        barRods: [
-                                          BarChartRodData(
-                                            width: 30,
-                                            toY: entry.value,
-                                            color: Colors.green,
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                          ),
-                                        ]),
-                                  )
-                                  .toList(),
-                              groupsSpace: 20.0,
-                              barTouchData: BarTouchData(
-                                touchTooltipData: BarTouchTooltipData(
-                                  getTooltipColor: (_) => Colors.white,
-                                ),
-                                touchCallback: (p0, p1) {},
-                              )),
-                        ),
+                        child: WeeklySales(),
                       ),
                     ],
                   ),
                 ),
-              ),
-              //pie
+              ),*/
+              // Pie Chart Card with Fixed Height
               SizedBox(
-                width: MediaQuery.of(context).size.width * .4,
+                width: MediaQuery.of(context).size.width * 0.4,
                 child: Card(
-                  color: Colors.red,
-                  child: Text("sai"),
+                  color: Colors.white,
+                  child: Flexible(child: OrderStatusPieChart()),
                 ),
               ),
-              //orders
-              SizedBox(
-                width: MediaQuery.of(context).size.width * .4,
-                child: Card(color: Colors.blue, child: Text("harshith")),
-              ),
+              // Orders Card
+              /*  SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                height: 150,
+                child: Card(
+                  color: Colors.blue,
+                  child: Center(
+                      child: Text("Orders Overview",
+                          style: TextStyle(color: Colors.white))),
+                ),
+              ), */
             ],
           ),
         ),
@@ -119,51 +87,6 @@ class DashboardDesktopScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  FlTitlesData buildFlTitleData() {
-    return FlTitlesData(
-      show: true,
-      bottomTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          getTitlesWidget: (value, meta) {
-            //map index to the desired day of week
-            final days = ['Mon', 'Tue', 'Wed', 'Thu', "Fri", "Sat", "Sun"];
-            //calculate the index ensure it warps around for the correct day
-            final index = value.toInt() % days.length;
-
-            //Get the day corresponding to the calculated index
-
-            final day = days[index];
-
-            return SideTitleWidget(
-              child: Text(day),
-              axisSide: AxisSide.bottom,
-              space: 0,
-            );
-          },
-        ),
-      ),
-      leftTitles: const AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          interval: 200,
-          reservedSize: 50,
-        ),
-      ),
-      rightTitles: const AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: false,
-          interval: 200,
-          reservedSize: 50,
-        ),
-      ),
-      topTitles: const AxisTitles(
-          sideTitles: SideTitles(
-        showTitles: false,
-      )),
     );
   }
 }

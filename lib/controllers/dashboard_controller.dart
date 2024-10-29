@@ -7,47 +7,58 @@ class DashboardController extends GetxController {
   static DashboardController get instance => Get.find();
   final RxList<double> weeklySales = <double>[].obs;
 
+  final RxMap<OrderStatus, int> orderStatusData = <OrderStatus, int>{}.obs;
+
+  final RxMap<OrderStatus, double> totalAmounts = <OrderStatus, double>{}.obs;
+
   static final List<OrderModel> orders = [
     OrderModel(
       id: '1',
       status: OrderStatus.processing,
       totalAmount: 265,
-      orderDate: DateTime(2024, 10, 23),
+      orderDate: DateTime(2024, 10, 28),
       deliveryDate: DateTime(2024, 10, 25),
     ),
     OrderModel(
       id: '2',
       status: OrderStatus.shipped,
       totalAmount: 395,
-      orderDate: DateTime(2024, 10, 23),
+      orderDate: DateTime(2024, 10, 29),
       deliveryDate: DateTime(2024, 10, 24),
     ),
     OrderModel(
       id: '3',
       status: OrderStatus.delivered,
       totalAmount: 395,
-      orderDate: DateTime(2024, 10, 24),
+      orderDate: DateTime(2024, 10, 30),
       deliveryDate: DateTime(2024, 15, 22),
     ),
     OrderModel(
       id: '4',
       status: OrderStatus.delivered,
       totalAmount: 455,
-      orderDate: DateTime(2024, 10, 25),
+      orderDate: DateTime(2024, 10, 31),
       deliveryDate: DateTime(2024, 5, 23),
     ),
     OrderModel(
       id: '5',
       status: OrderStatus.delivered,
       totalAmount: 155,
-      orderDate: DateTime(2024, 10, 26),
+      orderDate: DateTime(2024, 11, 1),
       deliveryDate: DateTime(2024, 5, 24),
     ),
     OrderModel(
       id: '6',
       status: OrderStatus.delivered,
       totalAmount: 1505,
-      orderDate: DateTime(2024, 10, 27),
+      orderDate: DateTime(2024, 11, 02),
+      deliveryDate: DateTime(2024, 5, 24),
+    ),
+    OrderModel(
+      id: '6',
+      status: OrderStatus.delivered,
+      totalAmount: 1505,
+      orderDate: DateTime(2024, 11, 03),
       deliveryDate: DateTime(2024, 5, 24),
     ),
   ];
@@ -56,40 +67,8 @@ class DashboardController extends GetxController {
   void onInit() {
     super.onInit();
     calculateWeeklySales();
+    calculateOrderStatusData();
   }
-
-/* 
-  void calculateWeeklySales() {
-    //Reset weeklySales to Zero
-
-    weeklySales.value = List<double>.filled(7, 0.0);
-    //Calculate weekly sales for each day of the week
-
-    for (var order in orders) {
-      final DateTime orderWeekStart =
-          HelpersFunctions.getStartofWeek(order.orderDate);
-
-      //caheck if the order is within the current week
-      if (orderWeekStart.isBefore(DateTime.now()) &&
-          orderWeekStart.add(const Duration(days: 7)).isAfter(DateTime.now())) {
-        int index = (order.orderDate.weekday - 1) % 7;
-
-        //Ensure the index is non-negative
-
-        index = index < 0 ? index + 7 : index;
-
-        weeklySales[index] += order.totalAmount;
-
-        print(
-          "OrderDate : ${order.orderDate}, CurrentWeekDay : ${orderWeekStart}, Index : $index",
-        );
-      }
-    }
-
-    print("weekly sales: $weeklySales");
-  }
-
- */
 
   void calculateWeeklySales() {
     // Reset weeklySales to zero
@@ -126,5 +105,24 @@ class DashboardController extends GetxController {
     }
 
     print("Weekly sales summary: $weeklySales");
+  }
+
+  void calculateOrderStatusData() {
+    //Reset status data
+
+    orderStatusData.clear();
+
+    //Map to store total amounts for each status
+
+    totalAmounts.value = {for (var status in OrderStatus.values) status: 0.0};
+
+    for (var order in orders) {
+      //const orders
+      final status = order.status;
+      orderStatusData[status] = (orderStatusData[status] ?? 0) + 1;
+      //calculate total amount for each status
+
+      totalAmounts[status] = (totalAmounts[status] ?? 0) + order.totalAmount;
+    }
   }
 }
